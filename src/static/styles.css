@@ -74,6 +74,7 @@ section h3 {
   margin-bottom: 8px;
 }
 
+/* Participants list inside activity cards */
 .activity-card .participants {
   margin-top: 12px;
   padding-left: 22px; /* keep visible bullets */
