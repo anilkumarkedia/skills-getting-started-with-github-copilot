@@ -74,6 +74,77 @@ section h3 {
   margin-bottom: 8px;
 }
 
+/* Participants list inside activity cards */
+.activity-card .participants {
+  margin-top: 12px;
+  padding-left: 22px; /* keep visible bullets */
+  color: #444;
+  font-size: 14px;
+}
+
+.activity-card .participants li {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+/* Hide bullets for participants list */
+.activity-card .participants.no-bullets {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* small circular avatar for each participant (use initials or image) */
+.activity-card .participant-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #e8eaf6; /* light indigo */
+  color: #1a237e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #c5cae9;
+  flex-shrink: 0;
+}
+
+/* participant name text */
+.activity-card .participant-name {
+  color: #333;
+  line-height: 1;
+}
+
+/* empty participants state */
+.activity-card .participants.empty {
+  list-style: none;
+  padding-left: 0;
+  color: #6b7280; /* muted gray */
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* Delete icon style */
+.delete-icon {
+  color: #d32f2f;
+  font-size: 16px;
+  transition: color 0.2s;
+}
+.delete-icon:hover {
+  color: #b71c1c;
+}
+
+/* Ensure the list wraps nicely on small screens */
+@media (max-width: 480px) {
+  .activity-card .participants {
+    padding-left: 18px;
+    font-size: 13px;
+  }
+}
+
 .form-group {
   margin-bottom: 15px;
 }

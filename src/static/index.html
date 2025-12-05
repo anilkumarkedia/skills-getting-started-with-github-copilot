@@ -17,7 +17,36 @@
         <h3>Available Activities</h3>
         <div id="activities-list">
           <!-- Activities will be loaded here -->
-          <p>Loading activities...</p>
+          <!-- Example activity card with participants -->
+          <div class="activity-card" data-activity-id="chess-club">
+            <h4>Chess Club</h4>
+            <p>Weekly strategy and practice sessions.</p>
+
+            <ul class="participants">
+              <li>
+                <span class="participant-avatar">AL</span>
+                <span class="participant-name">Alex Lee</span>
+              </li>
+              <li>
+                <span class="participant-avatar">MS</span>
+                <span class="participant-name">Maya Singh</span>
+              </li>
+              <li>
+                <span class="participant-avatar">RJ</span>
+                <span class="participant-name">R. Johnson</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Example activity card with no participants (empty state) -->
+          <div class="activity-card" data-activity-id="astronomy-club">
+            <h4>Astronomy Club</h4>
+            <p>Stargazing nights and space talks.</p>
+
+            <ul class="participants empty">
+              <li>No participants yet — be the first to sign up!</li>
+            </ul>
+          </div>
         </div>
       </section>
 

@@ -10,15 +10,27 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("/activities");
       const activities = await response.json();
 
-      // Clear loading message
+      // Clear loading message / previous content
       activitiesList.innerHTML = "";
+
+      // Reset activity select (keep placeholder)
+      activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
+
+      // helper to generate initials
+      function getInitials(name) {
+        if (!name) return "";
+        const parts = String(name).trim().split(/\s+/).filter(Boolean);
+        if (parts.length === 0) return "";
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
         const activityCard = document.createElement("div");
         activityCard.className = "activity-card";
 
-        const spotsLeft = details.max_participants - details.participants.length;
+        const spotsLeft = details.max_participants - (details.participants?.length || 0);
 
         activityCard.innerHTML = `
           <h4>${name}</h4>
@@ -27,6 +39,60 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
         `;
 
+        // Create participants list
+        const participantsUl = document.createElement("ul");
+        if (Array.isArray(details.participants) && details.participants.length > 0) {
+          participantsUl.className = "participants no-bullets";
+          details.participants.forEach((p) => {
+            const display = typeof p === "string" ? p : (p.name || p.email || String(p));
+            const li = document.createElement("li");
+
+            const avatar = document.createElement("span");
+            avatar.className = "participant-avatar";
+            avatar.textContent = getInitials(display);
+
+            const nameSpan = document.createElement("span");
+            nameSpan.className = "participant-name";
+            nameSpan.textContent = display;
+
+            // Delete icon
+            const deleteIcon = document.createElement("span");
+            deleteIcon.className = "delete-icon";
+            deleteIcon.title = "Remove participant";
+            deleteIcon.innerHTML = "&#128465;"; // Unicode trash can
+            deleteIcon.style.cursor = "pointer";
+            deleteIcon.style.marginLeft = "8px";
+            deleteIcon.onclick = async () => {
+              if (confirm(`Remove ${display} from ${name}?`)) {
+                try {
+                  const response = await fetch(`/activities/${encodeURIComponent(name)}/unregister?email=${encodeURIComponent(display)}`, {
+                    method: "POST"
+                  });
+                  if (response.ok) {
+                    fetchActivities();
+                  } else {
+                    const result = await response.json();
+                    alert(result.detail || "Failed to remove participant.");
+                  }
+                } catch (err) {
+                  alert("Error removing participant.");
+                }
+              }
+            };
+
+            li.appendChild(avatar);
+            li.appendChild(nameSpan);
+            li.appendChild(deleteIcon);
+            participantsUl.appendChild(li);
+          });
+        } else {
+          participantsUl.className = "participants empty";
+          const li = document.createElement("li");
+          li.textContent = "No participants yet — be the first to sign up!";
+          participantsUl.appendChild(li);
+        }
+
+        activityCard.appendChild(participantsUl);
         activitiesList.appendChild(activityCard);
 
         // Add option to select dropdown
@@ -62,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        fetchActivities(); // Refresh the activities list
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
