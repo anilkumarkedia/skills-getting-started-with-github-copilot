@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Create participants list
         const participantsUl = document.createElement("ul");
         if (Array.isArray(details.participants) && details.participants.length > 0) {
-          participantsUl.className = "participants";
+          participantsUl.className = "participants no-bullets";
           details.participants.forEach((p) => {
             const display = typeof p === "string" ? p : (p.name || p.email || String(p));
             const li = document.createElement("li");
@@ -55,8 +55,34 @@ document.addEventListener("DOMContentLoaded", () => {
             nameSpan.className = "participant-name";
             nameSpan.textContent = display;
 
+            // Delete icon
+            const deleteIcon = document.createElement("span");
+            deleteIcon.className = "delete-icon";
+            deleteIcon.title = "Remove participant";
+            deleteIcon.innerHTML = "&#128465;"; // Unicode trash can
+            deleteIcon.style.cursor = "pointer";
+            deleteIcon.style.marginLeft = "8px";
+            deleteIcon.onclick = async () => {
+              if (confirm(`Remove ${display} from ${name}?`)) {
+                try {
+                  const response = await fetch(`/activities/${encodeURIComponent(name)}/unregister?email=${encodeURIComponent(display)}`, {
+                    method: "POST"
+                  });
+                  if (response.ok) {
+                    fetchActivities();
+                  } else {
+                    const result = await response.json();
+                    alert(result.detail || "Failed to remove participant.");
+                  }
+                } catch (err) {
+                  alert("Error removing participant.");
+                }
+              }
+            };
+
             li.appendChild(avatar);
             li.appendChild(nameSpan);
+            li.appendChild(deleteIcon);
             participantsUl.appendChild(li);
           });
         } else {
@@ -102,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        fetchActivities(); // Refresh the activities list
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";

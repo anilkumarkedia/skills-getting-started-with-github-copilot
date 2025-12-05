@@ -78,7 +78,6 @@ section h3 {
 .activity-card .participants {
   margin-top: 12px;
   padding-left: 22px; /* keep visible bullets */
-  list-style: disc;
   color: #444;
   font-size: 14px;
 }
@@ -88,6 +87,13 @@ section h3 {
   display: flex;
   align-items: center;
   gap: 10px;
+  position: relative;
+}
+
+/* Hide bullets for participants list */
+.activity-card .participants.no-bullets {
+  list-style: none;
+  padding-left: 0;
 }
 
 /* small circular avatar for each participant (use initials or image) */
@@ -119,6 +125,16 @@ section h3 {
   color: #6b7280; /* muted gray */
   font-style: italic;
   font-size: 13px;
+}
+
+/* Delete icon style */
+.delete-icon {
+  color: #d32f2f;
+  font-size: 16px;
+  transition: color 0.2s;
+}
+.delete-icon:hover {
+  color: #b71c1c;
 }
 
 /* Ensure the list wraps nicely on small screens */
